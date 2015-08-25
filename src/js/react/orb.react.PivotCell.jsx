@@ -146,6 +146,7 @@ function getClassname(compProps) {
     var cell = compProps.cell;
     var classname = cell.cssclass;
     classname += compProps.className || '';
+    classname += cell.expanded ? ' expanded' : ' closed';
     var isEmpty = cell.template === 'cell-template-empty';
 
     if(!cell.visible()) {

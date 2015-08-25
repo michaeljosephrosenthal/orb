@@ -28,10 +28,13 @@ module.exports.PivotTableRowHeaders = react.createClass({
       lastLeftMostCellVSpan: 0,
       topMostCells: {}
     };
+    var ordering = pgridwidget.rows.headers[0].map(
+        function(cell){return cell.dim && cell.dim.field && cell.dim.field.caption ? cell.dim.field.caption.toLowerCase() : 'captionless'})
 
     var rowHeaders = pgridwidget.rows.headers.map(function(headerRow, index) {
       return <PivotRow key={index}
                        row={headerRow}
+                       ordering={ordering}
                        axetype={axe.Type.ROWS}
                        layoutInfos={layoutInfos}
                        pivotTableComp={self.props.pivotTableComp}
@@ -41,8 +44,8 @@ module.exports.PivotTableRowHeaders = react.createClass({
 
     return  <div className={ 'inner-table-container' + cntrClass } ref="rowHeadersContainer" onWheel={this.props.pivotTableComp.onWheel}>
       <table className="inner-table">
-        <colgroup ref="colgroup">
-        </colgroup>
+          {/*<colgroup ref="colgroup">
+             </colgroup>*/}
         <tbody>
           {rowHeaders}
         </tbody>

@@ -23,7 +23,10 @@ module.exports.PivotRow = react.createClass({
     cells = this.props.row.map(function(cell, index) {
 
       var isleftmost = false;
-      var className = 'pivot-cell cell-' + (index + 1) + ' ';
+      var className = ' pivot-cell ';
+      if(self.props.ordering && cell.dim.field){
+        className +=  'cell-' + (self.props.ordering.indexOf(cell.dim.field.caption.toLowerCase()) + 1) + ' ' 
+      }
 
       // If current cells are column/data headers and left most cell is not found yet
       // and last row left most cell does not span vertically over the current one and current one is visible 

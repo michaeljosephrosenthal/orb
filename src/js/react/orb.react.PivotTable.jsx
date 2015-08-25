@@ -119,8 +119,6 @@ module.exports.PivotTable = react.createClass({
     var elem;
     var scrollbar;
     var amount;
-
-    console.log(e)
     if(e.currentTarget == (elem = this.refs.colHeadersContainer.getDOMNode())) {
       scrollbar = this.refs.horizontalScrollBar;
       amount = e.deltaX || e.deltaY;

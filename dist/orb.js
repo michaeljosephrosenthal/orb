@@ -3078,8 +3078,6 @@
                     var elem;
                     var scrollbar;
                     var amount;
-
-                    console.log(e)
                     if (e.currentTarget == (elem = this.refs.colHeadersContainer.getDOMNode())) {
                         scrollbar = this.refs.horizontalScrollBar;
                         amount = e.deltaX || e.deltaY;
@@ -3569,7 +3567,10 @@
                     cells = this.props.row.map(function(cell, index) {
 
                         var isleftmost = false;
-                        var className = 'pivot-cell cell-' + (index + 1) + ' ';
+                        var className = ' pivot-cell ';
+                        if (self.props.ordering && cell.dim.field) {
+                            className += 'cell-' + (self.props.ordering.indexOf(cell.dim.field.caption.toLowerCase()) + 1) + ' '
+                        }
 
                         // If current cells are column/data headers and left most cell is not found yet
                         // and last row left most cell does not span vertically over the current one and current one is visible 
@@ -3786,6 +3787,7 @@
                 var cell = compProps.cell;
                 var classname = cell.cssclass;
                 classname += compProps.className || '';
+                classname += cell.expanded ? ' expanded' : ' closed';
                 var isEmpty = cell.template === 'cell-template-empty';
 
                 if (!cell.visible()) {
@@ -4539,11 +4541,16 @@
                         lastLeftMostCellVSpan: 0,
                         topMostCells: {}
                     };
+                    var ordering = pgridwidget.rows.headers[0].map(
+                        function(cell) {
+                            return cell.dim && cell.dim.field && cell.dim.field.caption ? cell.dim.field.caption.toLowerCase() : 'captionless'
+                        })
 
                     var rowHeaders = pgridwidget.rows.headers.map(function(headerRow, index) {
                         return React.createElement(PivotRow, {
                             key: index,
                             row: headerRow,
+                            ordering: ordering,
                             axetype: axe.Type.ROWS,
                             layoutInfos: layoutInfos,
                             pivotTableComp: self.props.pivotTableComp,
@@ -4559,9 +4566,7 @@
                         React.createElement("table", {
                                 className: "inner-table"
                             },
-                            React.createElement("colgroup", {
-                                ref: "colgroup"
-                            }),
+
                             React.createElement("tbody", null,
                                 rowHeaders
                             )
