@@ -23,6 +23,7 @@ module.exports.PivotRow = react.createClass({
     cells = this.props.row.map(function(cell, index) {
 
       var isleftmost = false;
+      var className = 'pivot-cell cell-' + (index + 1) + ' ';
 
       // If current cells are column/data headers and left most cell is not found yet
       // and last row left most cell does not span vertically over the current one and current one is visible 
@@ -33,6 +34,7 @@ module.exports.PivotRow = react.createClass({
             istopmost = true;
             layoutInfos.topMostCells[cell.dim.depth] = cell.dim;
           }
+          if(cell.dim.field){ className += cell.dim.field.caption.toLowerCase() }
         } else if(!layoutInfos.topMostCells['0']) {
           istopmost = layoutInfos.topMostCells['0'] = true;
         }
@@ -49,7 +51,8 @@ module.exports.PivotRow = react.createClass({
                         cell={cell}
                         leftmost={isleftmost}
                         topmost={istopmost}
-                        pivotTableComp={self.props.pivotTableComp}>
+                        pivotTableComp={self.props.pivotTableComp}
+                        className={className}>
              </PivotCell>;
     });
 
@@ -59,7 +62,7 @@ module.exports.PivotRow = react.createClass({
     }
 
     return (
-      <tr style={rowstyle}>
+      <tr style={rowstyle} className={this.props.className || 'pivot-row'}>
         {cells}
       </tr>
     );

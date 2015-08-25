@@ -1,10 +1,10 @@
 /**
- * orb v1.0.9, Pivot grid javascript library.
+ * orb v1.0.9, Pivot table javascript library.
  *
  * Copyright (c) 2014-2015 Najmeddine Nouri <devnajm@gmail.com>.
  *
  * @version v1.0.9
- * @link http://nnajm.github.io/orb/
+ * @link http://orbjs.net/
  * @license MIT
  */
 
@@ -375,38 +375,38 @@
 .orb-gray .orb .columns-cntr{border:1px solid #bfbfbf;border-bottom:none;border-radius:4px 4px 0 0}
 .orb-gray .orb .rows-cntr{border:1px solid #bfbfbf;border-right:none;border-radius:4px 0 0 4px}
 .orb-gray .orb .data-cntr{border:1px solid #bfbfbf;border-radius:0 0 4px}
-.orb-gray .orb .fld-btn{background-color:gray;color:#fff;font-weight:700;height:25px;border:none;border-radius:4px;padding:4px 5px}
+.orb-gray .orb .fld-btn{background-color:grey;color:#fff;font-weight:700;height:25px;border:none;border-radius:4px;padding:4px 5px}
 .orb-gray .orb .fld-btn:hover{background-color:rgba(128,128,128,.7)}
-.orb-gray .orb .fld-btn:hover .fltr-btn{background-color:gray}
+.orb-gray .orb .fld-btn:hover .fltr-btn{background-color:grey}
 .orb-gray .orb .fld-btn .fltr-btn-active,.orb-gray .orb .fld-btn .fltr-btn:hover{background-color:#a6a6a6}
 .orb-gray .orb .drp-trgt{height:27px}
 .orb-gray .orb .drp-trgt-over{background-color:#f8f8f8}
 .orb-gray .orb .drp-trgt-empty{border:1px dashed #bfbfbf}
 .orb-gray .orb .drp-indic{height:25px}
 .orb-gray .orb .drp-indic-over{background-color:#bfbfbf}
-.orb-gray.fltr-cntnr{border:1px solid #bfbfbf;box-shadow:0 5px 15px gray}
+.orb-gray.fltr-cntnr{border:1px solid #bfbfbf;box-shadow:0 5px 15px grey}
 .orb-gray .fltr-scntnr .srchbox-col,.orb-gray .fltr-scntnr .srchop-col,.orb-gray .fltr-scntnr .srchtyp-col{border:1px solid #bfbfbf}
 .orb-gray .fltr-scntnr .srchtyp-col:hover{border:1px solid rgba(128,128,128,.7)}
 .orb-gray .fltr-scntnr .srchtyp-col-active{background-color:rgba(128,128,128,.7);color:#fff;border:1px solid rgba(128,128,128,.7)}
 .orb-gray .fltr-scntnr .fltr-vals-col{border-bottom:1px solid #bfbfbf}
-.orb-gray .orb-btn{padding:1px 4px;background-color:gray;color:#fff;border:none}
+.orb-gray .orb-btn{padding:1px 4px;background-color:grey;color:#fff;border:none}
 .orb-gray .orb-btn:hover{background-color:rgba(128,128,128,.7)}
 .orb-gray .orb-tgl-btn div:hover{background-color:#bfbfbf}
 .orb-gray .orb-toolbar{background-color:#f2f2f2;border:1px solid #bfbfbf}
 .orb-gray .orb-tlbr-btn{border:1px solid #f2f2f2}
-.orb-gray .orb-tlbr-btn:hover{border:1px solid gray}
+.orb-gray .orb-tlbr-btn:hover{border:1px solid grey}
 .orb-gray .orb-tlbr-sep{border-right:1px solid #bfbfbf}
 .orb-gray .orb-select,.orb-gray .orb-select ul{border:1px solid #bfbfbf}
 .orb-gray .orb-select ul li:hover{background-color:rgba(128,128,128,.7)}
 .orb-gray .orb-scrollthumb{background-color:#f2f2f2;border:1px solid #bfbfbf;border-radius:3px}
 .orb-gray .orb-scrollthumb-hover{background-color:#bfbfbf}
 .orb-gray.orb-overlay{background-color:rgba(128,128,128,.45)}
-.orb-gray .orb-dialog{background-color:#fff;border:1px solid gray;box-shadow:0 5px 15px gray;padding:7px 13px}
+.orb-gray .orb-dialog{background-color:#fff;border:1px solid grey;box-shadow:0 5px 15px grey;padding:7px 13px}
 .orb-gray .orb-dialog-header{background-color:#fff}
 .orb-gray .orb-dialog-header .button-close{background-color:#fff;margin:5px 3px 1px 1px}
 .orb-gray .orb-dialog-header .button-close:hover{background-color:#bfbfbf}
 .orb-gray .orb-table td,.orb-gray .orb-table th{border-top:1px solid #bfbfbf}
-.orb-gray .orb-table th{background-color:gray;color:#fff;border:1px solid #bfbfbf;font-weight:700}
+.orb-gray .orb-table th{background-color:grey;color:#fff;border:1px solid #bfbfbf;font-weight:700}
 .orb-black .orb{color:#000}
 .orb-black .orb .av-flds{border-bottom:1px solid #7f7f7f!important}
 .orb-black .orb .flds-grp-cap div{color:#ccc}
@@ -490,14 +490,14 @@
 .orb-white .orb-tgl-btn div:hover{background-color:#d9d9d9}
 .orb-white .orb-toolbar{background-color:#fff;border:1px solid #d9d9d9}
 .orb-white .orb-tlbr-btn{border:1px solid #fff}
-.orb-white .orb-tlbr-btn:hover{border:1px solid gray}
+.orb-white .orb-tlbr-btn:hover{border:1px solid grey}
 .orb-white .orb-tlbr-sep{border-right:1px solid #d9d9d9}
 .orb-white .orb-select,.orb-white .orb-select ul{border:1px solid #d9d9d9}
 .orb-white .orb-select ul li:hover{background-color:rgba(128,128,128,.1)}
 .orb-white .orb-scrollthumb{background-color:#fff;border:1px solid #d9d9d9;border-radius:3px}
 .orb-white .orb-scrollthumb-hover{background-color:#d9d9d9}
 .orb-white.orb-overlay{background-color:rgba(0,0,0,.25)}
-.orb-white .orb-dialog{background-color:#fff;border:1px solid gray;box-shadow:0 5px 15px gray;padding:7px 13px}
+.orb-white .orb-dialog{background-color:#fff;border:1px solid grey;box-shadow:0 5px 15px grey;padding:7px 13px}
 .orb-white .orb-dialog-header{background-color:#fff}
 .orb-white .orb-dialog-header .button-close{background-color:#fff;margin:5px 3px 1px 1px}
 .orb-white .orb-dialog-header .button-close:hover{background-color:#d9d9d9}

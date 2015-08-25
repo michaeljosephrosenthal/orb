@@ -145,6 +145,7 @@ module.exports.PivotCell = react.createClass({
 function getClassname(compProps) {
     var cell = compProps.cell;
     var classname = cell.cssclass;
+    classname += compProps.className || '';
     var isEmpty = cell.template === 'cell-template-empty';
 
     if(!cell.visible()) {

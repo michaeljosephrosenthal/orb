@@ -137,11 +137,21 @@ module.exports.PivotTable = react.createClass({
         var scrollbar;
         var amount;
 
+        console.log(e)
         if (e.currentTarget == (elem = this.refs.colHeadersContainer.getDOMNode())) {
             scrollbar = this.refs.horizontalScrollBar;
             amount = e.deltaX || e.deltaY;
-        } else if ((e.currentTarget == (elem = this.refs.rowHeadersContainer.getDOMNode())) ||
-            (e.currentTarget == (elem = this.refs.dataCellsContainer.getDOMNode()))) {
+        } else if ((e.currentTarget == (elem = this.refs.rowHeadersContainer.getDOMNode()))
+            /*||
+                         (e.currentTarget == (elem = this.refs.dataCellsContainer.getDOMNode()))*/
+        ) {
+            scrollbar = this.refs.verticalScrollBar;
+            amount = e.deltaY;
+        } else if (e.currentTarget == (elem = this.refs.dataCellsContainer.getDOMNode())) {
+            if (e.deltaX && this.refs.horizontalScrollBar.scroll(e.deltaX, e.deltaMode)) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
             scrollbar = this.refs.verticalScrollBar;
             amount = e.deltaY;
         }
@@ -186,7 +196,6 @@ module.exports.PivotTable = react.createClass({
         nodes.rowHeadersTable.size = reactUtils.getSize(nodes.rowHeadersTable.node);
 
         // get row buttons container width
-        //nodes.rowButtonsContainer.node.style.width = '';
         var rowButtonsContainerWidth = reactUtils.getSize(nodes.rowButtonsContainer.node.children[0]).width;
 
         // get array of dataCellsTable column widths
@@ -212,9 +221,6 @@ module.exports.PivotTable = react.createClass({
             nodes.rowHeadersTable.size.width += rowDiff;
             nodes.rowHeadersTable.widthArray[nodes.rowHeadersTable.widthArray.length - 1] += rowDiff;
         }
-
-        //nodes.rowButtonsContainer.node.style.width = (rowHeadersTableWidth + 1) + 'px';
-        //nodes.rowButtonsContainer.node.style.paddingRight = (rowHeadersTableWidth + 1 - rowButtonsContainerWidth + 17) + 'px';
 
         // Set dataCellsTable cells widths according to the computed dataCellsTableMaxWidthArray
         reactUtils.updateTableColGroup(nodes.dataCellsTable.node, dataCellsTableMaxWidthArray);
@@ -333,6 +339,7 @@ module.exports.PivotTable = react.createClass({
                     ),
                     React.createElement("tbody", null,
                         React.createElement("tr", {
+                                className: "pivot-table upper-buttons",
                                 ref: "upperbuttonsRow"
                             },
                             React.createElement("td", {
@@ -344,6 +351,7 @@ module.exports.PivotTable = react.createClass({
                             )
                         ),
                         React.createElement("tr", {
+                                className: "pivot-table column-buttons",
                                 ref: "columnbuttonsRow"
                             },
                             React.createElement("td", null),
@@ -362,6 +370,7 @@ module.exports.PivotTable = react.createClass({
                         ),
                         React.createElement("tr", null,
                             React.createElement("td", {
+                                    className: "pivot-table row-buttons",
                                     style: {
                                         position: 'relative'
                                     }
@@ -371,7 +380,9 @@ module.exports.PivotTable = react.createClass({
                                     ref: "rowButtonsContainer"
                                 })
                             ),
-                            React.createElement("td", null,
+                            React.createElement("td", {
+                                    className: "pivot-table column-headers"
+                                },
                                 React.createElement(PivotTableColumnHeaders, {
                                     pivotTableComp: self,
                                     ref: "colHeadersContainer"
@@ -382,13 +393,17 @@ module.exports.PivotTable = react.createClass({
                             })
                         ),
                         React.createElement("tr", null,
-                            React.createElement("td", null,
+                            React.createElement("td", {
+                                    className: "pivot-table row-headers"
+                                },
                                 React.createElement(PivotTableRowHeaders, {
                                     pivotTableComp: self,
                                     ref: "rowHeadersContainer"
                                 })
                             ),
-                            React.createElement("td", null,
+                            React.createElement("td", {
+                                    className: "pivot-table data-cells"
+                                },
                                 React.createElement("div", {
                                         className: "inner-table-container data-cntr",
                                         ref: "dataCellsContainer",
@@ -598,17 +613,18 @@ function setTableWidths(tblObject, newWidthArray) {
 }
 
 function clearTableWidths(tbl) {
-        if (tbl) {
-            for (var rowIndex = 0; rowIndex < tbl.rows.length; rowIndex++) {
-                var row = tbl.rows[rowIndex];
-                for (var cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
-                    row.cells[cellIndex].children[0].style.width = '';
-                }
+    if (tbl) {
+        for (var rowIndex = 0; rowIndex < tbl.rows.length; rowIndex++) {
+            var row = tbl.rows[rowIndex];
+            for (var cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
+                row.cells[cellIndex].children[0].style.width = '';
             }
-            tbl.style.width = '';
         }
+        tbl.style.width = '';
     }
-    /** @jsx React.DOM */
+}
+
+/** @jsx React.DOM */
 
 /* global module, require, React */
 
@@ -633,6 +649,7 @@ module.exports.PivotRow = react.createClass({
         cells = this.props.row.map(function(cell, index) {
 
             var isleftmost = false;
+            var className = 'pivot-cell cell-' + (index + 1) + ' ';
 
             // If current cells are column/data headers and left most cell is not found yet
             // and last row left most cell does not span vertically over the current one and current one is visible 
@@ -642,6 +659,9 @@ module.exports.PivotRow = react.createClass({
                     if ((cell.dim.isRoot && layoutInfos.topMostCells[cell.dim.depth - 1] === undefined) || (!cell.dim.isRoot && layoutInfos.topMostCells[cell.dim.depth] === undefined && (cell.dim.parent.isRoot || layoutInfos.topMostCells[cell.dim.depth + 1] === cell.dim.parent))) {
                         istopmost = true;
                         layoutInfos.topMostCells[cell.dim.depth] = cell.dim;
+                    }
+                    if (cell.dim.field) {
+                        className += cell.dim.field.caption.toLowerCase()
                     }
                 } else if (!layoutInfos.topMostCells['0']) {
                     istopmost = layoutInfos.topMostCells['0'] = true;
@@ -660,7 +680,8 @@ module.exports.PivotRow = react.createClass({
                 cell: cell,
                 leftmost: isleftmost,
                 topmost: istopmost,
-                pivotTableComp: self.props.pivotTableComp
+                pivotTableComp: self.props.pivotTableComp,
+                className: className
             });
         });
 
@@ -671,13 +692,15 @@ module.exports.PivotRow = react.createClass({
 
         return (
             React.createElement("tr", {
-                    style: rowstyle
+                    style: rowstyle,
+                    className: this.props.className || 'pivot-row'
                 },
                 cells
             )
         );
     }
 });
+
 /** @jsx React.DOM */
 
 /* global module, require, React */
@@ -847,38 +870,40 @@ module.exports.PivotCell = react.createClass({
 });
 
 function getClassname(compProps) {
-        var cell = compProps.cell;
-        var classname = cell.cssclass;
-        var isEmpty = cell.template === 'cell-template-empty';
+    var cell = compProps.cell;
+    var classname = cell.cssclass;
+    classname += compProps.className || '';
+    var isEmpty = cell.template === 'cell-template-empty';
 
-        if (!cell.visible()) {
-            classname += ' cell-hidden';
-        }
-
-        if (cell.type === uiheaders.HeaderType.SUB_TOTAL && cell.expanded) {
-            classname += ' header-st-exp';
-        }
-
-        if (cell.type === uiheaders.HeaderType.GRAND_TOTAL) {
-            if (cell.dim.depth === 1) {
-                classname += ' header-nofields';
-            } else if (cell.dim.depth > 2) {
-                classname += ' header-gt-exp';
-            }
-        }
-
-        if (compProps.leftmost) {
-            classname += ' ' + (cell.template === 'cell-template-datavalue' ? 'cell' : 'header') + '-leftmost';
-        }
-
-        if (compProps.topmost) {
-            classname += ' cell-topmost';
-        }
-
-        return classname;
+    if (!cell.visible()) {
+        classname += ' cell-hidden';
     }
-    /* global module, require, react, reactUtils */
-    /*jshint eqnull: true*/
+
+    if (cell.type === uiheaders.HeaderType.SUB_TOTAL && cell.expanded) {
+        classname += ' header-st-exp';
+    }
+
+    if (cell.type === uiheaders.HeaderType.GRAND_TOTAL) {
+        if (cell.dim.depth === 1) {
+            classname += ' header-nofields';
+        } else if (cell.dim.depth > 2) {
+            classname += ' header-gt-exp';
+        }
+    }
+
+    if (compProps.leftmost) {
+        classname += ' ' + (cell.template === 'cell-template-datavalue' ? 'cell' : 'header') + '-leftmost';
+    }
+
+    if (compProps.topmost) {
+        classname += ' cell-topmost';
+    }
+
+    return classname;
+}
+
+/* global module, require, react, reactUtils */
+/*jshint eqnull: true*/
 
 'use strict';
 
@@ -1599,7 +1624,8 @@ module.exports.PivotTableColumnHeaders = react.createClass({
                 row: headerRow,
                 axetype: axe.Type.COLUMNS,
                 pivotTableComp: self.props.pivotTableComp,
-                layoutInfos: layoutInfos
+                layoutInfos: layoutInfos,
+                className: "column-header-row"
             });
         });
 
@@ -1619,6 +1645,7 @@ module.exports.PivotTableColumnHeaders = react.createClass({
         );
     }
 });
+
 /** @jsx React.DOM */
 
 /* global module, require, React */
@@ -1656,7 +1683,8 @@ module.exports.PivotTableRowHeaders = react.createClass({
                 row: headerRow,
                 axetype: axe.Type.ROWS,
                 layoutInfos: layoutInfos,
-                pivotTableComp: self.props.pivotTableComp
+                pivotTableComp: self.props.pivotTableComp,
+                className: "row-header-row"
             });
         });
 
@@ -1678,6 +1706,7 @@ module.exports.PivotTableRowHeaders = react.createClass({
         );
     }
 });
+
 /** @jsx React.DOM */
 
 /* global module, require, React */

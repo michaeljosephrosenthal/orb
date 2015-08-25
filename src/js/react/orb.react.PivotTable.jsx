@@ -120,11 +120,19 @@ module.exports.PivotTable = react.createClass({
     var scrollbar;
     var amount;
 
+    console.log(e)
     if(e.currentTarget == (elem = this.refs.colHeadersContainer.getDOMNode())) {
       scrollbar = this.refs.horizontalScrollBar;
       amount = e.deltaX || e.deltaY;
-    } else if((e.currentTarget == (elem = this.refs.rowHeadersContainer.getDOMNode())) ||
-              (e.currentTarget == (elem = this.refs.dataCellsContainer.getDOMNode())) ) {
+    } else if((e.currentTarget == (elem = this.refs.rowHeadersContainer.getDOMNode())) /*||
+              (e.currentTarget == (elem = this.refs.dataCellsContainer.getDOMNode()))*/ ) {
+      scrollbar = this.refs.verticalScrollBar;
+      amount = e.deltaY;
+    } else if (e.currentTarget == (elem = this.refs.dataCellsContainer.getDOMNode())) {
+      if(e.deltaX && this.refs.horizontalScrollBar.scroll(e.deltaX, e.deltaMode)){
+        e.stopPropagation();
+        e.preventDefault();
+      }
       scrollbar = this.refs.verticalScrollBar;
       amount = e.deltaY;
     }
@@ -282,12 +290,12 @@ module.exports.PivotTable = react.createClass({
           <col ref="column4"></col>
         </colgroup>
         <tbody>
-          <tr ref="upperbuttonsRow">
+          <tr  className="pivot-table upper-buttons" ref="upperbuttonsRow">
             <td colSpan="4">
               <PivotTableUpperButtons pivotTableComp={self}></PivotTableUpperButtons>              
             </td>
           </tr>
-          <tr ref="columnbuttonsRow">
+          <tr className="pivot-table column-buttons" ref="columnbuttonsRow">
             <td></td>
             <td style={{padding: '11px 4px !important'}}>
               <PivotTableColumnButtons pivotTableComp={self}></PivotTableColumnButtons>
@@ -295,19 +303,19 @@ module.exports.PivotTable = react.createClass({
             <td colSpan="2"></td>
           </tr>
           <tr>
-            <td style={{ position: 'relative'}}>
+            <td className="pivot-table row-buttons" style={{ position: 'relative'}}>
               <PivotTableRowButtons pivotTableComp={self} ref="rowButtonsContainer"></PivotTableRowButtons>
             </td>
-            <td>
+            <td className="pivot-table column-headers">
               <PivotTableColumnHeaders pivotTableComp={self} ref="colHeadersContainer"></PivotTableColumnHeaders> 
             </td>
             <td colSpan="2"></td>
           </tr>
           <tr>
-            <td>
+            <td className="pivot-table row-headers">
               <PivotTableRowHeaders pivotTableComp={self} ref="rowHeadersContainer"></PivotTableRowHeaders>
             </td>
-            <td>
+            <td className="pivot-table data-cells">
               <div className="inner-table-container data-cntr" ref="dataCellsContainer" onWheel={this.onWheel}>
                 <PivotTableDataCells pivotTableComp={self} ref="dataCellsTable"></PivotTableDataCells>
               </div>

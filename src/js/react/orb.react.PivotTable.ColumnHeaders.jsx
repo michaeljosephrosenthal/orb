@@ -21,7 +21,8 @@ module.exports.PivotTableColumnHeaders = react.createClass({
                        row={headerRow}
                        axetype={axe.Type.COLUMNS}
                        pivotTableComp={self.props.pivotTableComp}
-                       layoutInfos={layoutInfos}>
+                       layoutInfos={layoutInfos}
+                       className="column-header-row">
       </PivotRow>;
     });              
 

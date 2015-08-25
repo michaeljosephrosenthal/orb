@@ -34,7 +34,8 @@ module.exports.PivotTableRowHeaders = react.createClass({
                        row={headerRow}
                        axetype={axe.Type.ROWS}
                        layoutInfos={layoutInfos}
-                       pivotTableComp={self.props.pivotTableComp}>
+                       pivotTableComp={self.props.pivotTableComp}
+                       className="row-header-row">
       </PivotRow>;
     });
 
