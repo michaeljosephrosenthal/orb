@@ -39,8 +39,8 @@ function mergefieldconfigs() {
         merged.subtotals.push(nnconfig.subTotal || {});
         merged.functions.push({
             aggregateFuncName: nnconfig.aggregateFuncName,
-            aggregateFunc: i === 0 ? nnconfig.aggregateFunc : (nnconfig.aggregateFunc ? nnconfig.aggregateFunc() : null),
-            formatFunc: i === 0 ? nnconfig.formatFunc : (nnconfig.formatFunc ? nnconfig.formatFunc() : null),
+            aggregateFunc: (nnconfig.aggregateFunc ? nnconfig.aggregateFunc() : null),
+            formatFunc: (nnconfig.formatFunc ? nnconfig.formatFunc() : null),
         });
     }
 
@@ -149,21 +149,21 @@ var Field = module.exports.field = function(options, createSubOptions) {
     function defaultFormatFunc(val) {   
         return val != null ? val.toString() : '';
     }
+    this.setAggregateFunc = function(func){
+        if (func) 
+            _aggregatefunc = aggregation.toAggregateFunc(func);
+    }
+    this.setFormatFunc = function(func) {
+        if (func) 
+            _formatfunc = func;
+    };
 
     this.aggregateFunc = function(func) {
-        if (func) {
-            _aggregatefunc = aggregation.toAggregateFunc(func);
-        } else {
-            return _aggregatefunc;
-        }
+        return _aggregatefunc;
     };
 
     this.formatFunc = function(func) {
-        if (func) {
-            _formatfunc = func;
-        } else {
-            return _formatfunc;
-        }
+        return _formatfunc;
     };
 
     this.aggregateFuncName = options.aggregateFuncName || 
@@ -173,8 +173,8 @@ var Field = module.exports.field = function(options, createSubOptions) {
                 'custom') :
             null);
 
-    this.aggregateFunc(options.aggregateFunc);
-    this.formatFunc(options.formatFunc || defaultFormatFunc);
+    this.setAggregateFunc(options.aggregateFunc);
+    this.setFormatFunc(options.formatFunc || defaultFormatFunc);
 
     if (createSubOptions !== false) {
         (this.rowSettings = new Field(options.rowSettings, false)).name = this.name;

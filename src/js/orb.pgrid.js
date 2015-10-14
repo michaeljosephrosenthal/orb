@@ -224,11 +224,13 @@ module.exports = function(config) {
                 for (var datafieldIndex = 0; datafieldIndex < self.config.dataFieldsCount; datafieldIndex++) {
                     datafield = self.config.dataFields[datafieldIndex] || defaultfield;
                     if (aggregateFunc || datafield.aggregateFunc) {
-                        datafields.push({ field: datafield, aggregateFunc: aggregateFunc || datafield.aggregateFunc()});
+                        datafields.push({
+                            field: datafield,
+                            aggregateFunc: aggregateFunc || datafield.aggregateFunc()
+                        });
                     }
                 }
             }
-
             for(var dfi = 0; dfi < datafields.length; dfi++) {
                 datafield = datafields[dfi];
                 // no data

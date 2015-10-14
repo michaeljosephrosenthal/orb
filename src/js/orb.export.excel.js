@@ -42,8 +42,8 @@ var docFooter = '</body></html>';
  * @memberOf orb.ui
  * @param  {orb.axe} rowsAxe - axe containing all rows dimensions.
  */
- module.exports = function(pgridwidget) {
-
+ module.exports = function(pgridwidget, filename, metadata) {
+    metadata = metadata || {}
  	var config = pgridwidget.pgrid.config;
 
  	var currTheme = themeManager.current();
@@ -117,6 +117,19 @@ var docFooter = '</body></html>';
  		}
  		return str;
  	}());
+ 	var metadataHeaders = (function() {
+        var rowStr = '';
+        var col = 1;
+        for (var key in metadata) {
+            if (metadata.hasOwnProperty(key)) {
+                rowStr += '<tr><td><b>' + key + '</b></td>';
+                rowStr += '<td>' + metadata[key] + '</td></tr>';
+                col++;
+            }
+        }
+        rowStr += '</tr>';
+ 		return rowStr;
+ 	}());
 
  	var rowHeadersAndDataCells = (function() {
  		var str = '';
@@ -142,8 +155,28 @@ var docFooter = '</body></html>';
  		return utils.btoa(unescape(encodeURIComponent(str)));
  	}
 
- 	return uriHeader +
- 		toBase64(docHeader +
- 				'<table>' + dataFields + sep + columnFields + columnHeaders + rowHeadersAndDataCells + '</table>' +
- 				docFooter);
+    function download_file(filename, filestring) {
+        var a = document.createElement('a');
+        a.download = filename + '.xls';
+        a.href =  filestring;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    var filestring = uriHeader + toBase64(
+        docHeader +
+            '<table>' +
+                dataFields +
+                sep +
+                metadataHeaders +
+                columnFields +
+                columnHeaders +
+                rowHeadersAndDataCells +
+            '</table>' +
+        docFooter
+    );
+ 	return filename ?
+        download_file(filename, filestring) :
+        filestring;
  };

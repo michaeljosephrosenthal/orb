@@ -781,6 +781,7 @@ module.exports.PivotCell = react.createClass({
         return true;
     },
     _latestVisibleState: false,
+
     render: function() {
         var self = this;
         var cell = this.props.cell;
@@ -826,7 +827,9 @@ module.exports.PivotCell = react.createClass({
                 value = cell.value.caption;
                 break;
             case 'cell-template-datavalue':
-                value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value;
+                value = (cell.datafield && cell.datafield.formatFunc) ?
+                    cell.datafield.formatFunc()(cell.value) :
+                    cell.value;
                 cellClick = function() {
                     self.props.pivotTableComp.pgridwidget.drilldown(cell, self.props.pivotTableComp.id);
                 };
@@ -1105,6 +1108,7 @@ var dragManager = module.exports.DragManager = (function() {
         }
     };
 }());
+
 /** @jsx React.DOM */
 
 /* global module, require, react */

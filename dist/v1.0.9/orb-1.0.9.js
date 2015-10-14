@@ -344,8 +344,8 @@
                     merged.subtotals.push(nnconfig.subTotal || {});
                     merged.functions.push({
                         aggregateFuncName: nnconfig.aggregateFuncName,
-                        aggregateFunc: i === 0 ? nnconfig.aggregateFunc : (nnconfig.aggregateFunc ? nnconfig.aggregateFunc() : null),
-                        formatFunc: i === 0 ? nnconfig.formatFunc : (nnconfig.formatFunc ? nnconfig.formatFunc() : null),
+                        aggregateFunc: (nnconfig.aggregateFunc ? nnconfig.aggregateFunc() : null),
+                        formatFunc: (nnconfig.formatFunc ? nnconfig.formatFunc() : null),
                     });
                 }
 
@@ -454,21 +454,21 @@
                 function defaultFormatFunc(val) {
                     return val != null ? val.toString() : '';
                 }
+                this.setAggregateFunc = function(func) {
+                    if (func)
+                        _aggregatefunc = aggregation.toAggregateFunc(func);
+                }
+                this.setFormatFunc = function(func) {
+                    if (func)
+                        _formatfunc = func;
+                };
 
                 this.aggregateFunc = function(func) {
-                    if (func) {
-                        _aggregatefunc = aggregation.toAggregateFunc(func);
-                    } else {
-                        return _aggregatefunc;
-                    }
+                    return _aggregatefunc;
                 };
 
                 this.formatFunc = function(func) {
-                    if (func) {
-                        _formatfunc = func;
-                    } else {
-                        return _formatfunc;
-                    }
+                    return _formatfunc;
                 };
 
                 this.aggregateFuncName = options.aggregateFuncName ||
@@ -478,8 +478,8 @@
                             'custom') :
                         null);
 
-                this.aggregateFunc(options.aggregateFunc);
-                this.formatFunc(options.formatFunc || defaultFormatFunc);
+                this.setAggregateFunc(options.aggregateFunc);
+                this.setFormatFunc(options.formatFunc || defaultFormatFunc);
 
                 if (createSubOptions !== false) {
                     (this.rowSettings = new Field(options.rowSettings, false)).name = this.name;
@@ -785,6 +785,7 @@
                     }
                 };
             };
+
         }, {
             "./orb.aggregation": 2,
             "./orb.axe": 3,
@@ -872,8 +873,8 @@
                 '<body>';
             var docFooter = '</body></html>';
 
-            module.exports = function(pgridwidget) {
-
+            module.exports = function(pgridwidget, filename, metadata) {
+                metadata = metadata || {}
                 var config = pgridwidget.pgrid.config;
 
                 var currTheme = themeManager.current();
@@ -947,6 +948,19 @@
                     }
                     return str;
                 }());
+                var metadataHeaders = (function() {
+                    var rowStr = '';
+                    var col = 1;
+                    for (var key in metadata) {
+                        if (metadata.hasOwnProperty(key)) {
+                            rowStr += '<tr><td><b>' + key + '</b></td>';
+                            rowStr += '<td>' + metadata[key] + '</td></tr>';
+                            col++;
+                        }
+                    }
+                    rowStr += '</tr>';
+                    return rowStr;
+                }());
 
                 var rowHeadersAndDataCells = (function() {
                     var str = '';
@@ -972,11 +986,32 @@
                     return utils.btoa(unescape(encodeURIComponent(str)));
                 }
 
-                return uriHeader +
-                    toBase64(docHeader +
-                        '<table>' + dataFields + sep + columnFields + columnHeaders + rowHeadersAndDataCells + '</table>' +
-                        docFooter);
+                function download_file(filename, filestring) {
+                    var a = document.createElement('a');
+                    a.download = filename + '.xls';
+                    a.href = filestring;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+
+                var filestring = uriHeader + toBase64(
+                    docHeader +
+                    '<table>' +
+                    dataFields +
+                    sep +
+                    metadataHeaders +
+                    columnFields +
+                    columnHeaders +
+                    rowHeadersAndDataCells +
+                    '</table>' +
+                    docFooter
+                );
+                return filename ?
+                    download_file(filename, filestring) :
+                    filestring;
             };
+
         }, {
             "./orb.themes": 11,
             "./orb.ui.header": 14,
@@ -1346,7 +1381,6 @@
                                 }
                             }
                         }
-
                         for (var dfi = 0; dfi < datafields.length; dfi++) {
                             datafield = datafields[dfi];
                             // no data
@@ -3694,6 +3728,7 @@
                     return true;
                 },
                 _latestVisibleState: false,
+
                 render: function() {
                     var self = this;
                     var cell = this.props.cell;
@@ -3739,7 +3774,9 @@
                             value = cell.value.caption;
                             break;
                         case 'cell-template-datavalue':
-                            value = (cell.datafield && cell.datafield.formatFunc) ? cell.datafield.formatFunc()(cell.value) : cell.value;
+                            value = (cell.datafield && cell.datafield.formatFunc) ?
+                                cell.datafield.formatFunc()(cell.value) :
+                                cell.value;
                             cellClick = function() {
                                 self.props.pivotTableComp.pgridwidget.drilldown(cell, self.props.pivotTableComp.id);
                             };
